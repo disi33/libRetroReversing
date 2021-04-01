@@ -1,4 +1,5 @@
 #include "../include/libRR.h"
+#include <cstdarg>
 #include <queue>
 #include "CDL.hpp"
 #include <experimental/filesystem>
