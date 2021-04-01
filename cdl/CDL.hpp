@@ -229,7 +229,7 @@ uint16_t two_bytes_to_16bit_value(uint8_t byte1, uint8_t byte2);
 uint32_t three_bytes_to_24bit_value(uint8_t byte1, uint8_t byte2, uint8_t byte3);
 uint32_t four_bytes_to_32bit_value(uint8_t byte1, uint8_t byte2, uint8_t byte3, uint8_t byte4);
 
-extern int   l_CurrentFrame;
+extern int   l_CurFrame;
 extern string rom_name;
 
 // Internal webserver

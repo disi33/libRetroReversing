@@ -10,7 +10,7 @@
 #endif
 
 // Common Variables
-int l_CurrentFrame;
+int l_CurFrame;
 int RRCurrentFrame = 0;
 bool isPaused = false;
 extern retro_environment_t environ_cb;

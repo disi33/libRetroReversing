@@ -1,7 +1,7 @@
 ifeq ($(OS),Windows_NT)
     CCFLAGS += -D WIN32 -D _WIN32 -w
     CXXFLAGS += -D WIN32 -D _WIN32 -std=c++11 -lstdc++fs -w -lstdc++
-    LDFLAGS += -std=c++11 -lstdc++fs -lstdc++ -pthread -lws2_32
+    LDFLAGS += -lc++ -std=c++11 -lstdc++fs -lstdc++ -pthread -lws2_32
     ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
         CCFLAGS += -D AMD64
         CFLAGS += -D AMD64
@@ -21,7 +21,7 @@ else
         CCFLAGS += -D LINUX -w
         CFLAGS += -D LINUX -w -lstdc++
         CXXFLAGS += -std=c++11 -lstdc++fs -w
-        LDFLAGS += -lc++ -std=c++11 -lstdc++fs -lstdc++ -pthread -ldl
+        LDFLAGS += -std=c++11 -lstdc++fs -lstdc++ -pthread -ldl
     endif
     ifeq ($(UNAME_S),Darwin)
         CCFLAGS += -D OSX -w  -MMD
@@ -43,10 +43,10 @@ else
 endif
 
 SOURCES_C_RR += \
-    ./libRetroReversing/cdl/jarowinkler.c \
-    ./libRetroReversing/civetweb/src/civetweb.c \
-    ./libRetroReversing/interpreter/duktape/duktape.c \
-    ./libRetroReversing/interpreter/mjs/mjs.c \
+    libRetroReversing/cdl/jarowinkler.c \
+    libRetroReversing/civetweb/src/civetweb.c \
+    libRetroReversing/interpreter/duktape/duktape.c \
+    libRetroReversing/interpreter/mjs/mjs.c \
 
 SOURCES_CXX_RR += \
     libRetroReversing/cdl/CDL_interface.cpp \
@@ -62,29 +62,24 @@ SOURCES_CXX_RR += \
     libRetroReversing/civetweb/src/libRRWebInterface.cpp \
     libRetroReversing/png/lodepng.cpp \
     libRetroReversing/source_exporter/CommonSourceExport.cpp \
-    libRetroReversing/consoles/${libRetroReversingConsole}.cpp \
+    libRetroReversing/consoles/N64.cpp \
 
 
 # TODO: use a local path instead of /usr/local/opt/nlohmann_json/include
-# CFLAGS += -I/usr/local/opt/nlohmann_json/include
-# CXXFLAGS += -I/usr/local/opt/nlohmann_json/include -std=c++11
+CFLAGS += -I./libRetroReversing/cdl/nlohmann
+CXXFLAGS += -I./libRetroReversing/cdl/nlohmann -std=c++11
 
-
-
-ifeq ($(libRetroReversingMakeType),OBJECTS)
-    OBJECTS += $(patsubst %.c,$(CORE_DIR)/build/obj/%_libretro.c.o,$(SOURCES_C_RR))
-    OBJECTS += $(patsubst %.cpp,$(CORE_DIR)/build/obj/%.cpp.o,$(SOURCES_CXX_RR))
-else
-    SOURCES_CXX += $(SOURCES_CXX_RR)
-    SOURCES_C += $(SOURCES_C_RR)
-endif
+#OBJECTS += $(patsubst %.c,$(CORE_DIR)/build/obj/%_libretro.c.o,$(SOURCES_C_RR))
+#OBJECTS += $(patsubst %.cpp,$(CORE_DIR)/build/obj/%.cpp.o,$(SOURCES_CXX_RR))
+SOURCE += $(SOURCES_CXX_RR)
+SOURCE += $(SOURCES_C_RR)
 
 # TODO: Might need to set CORE_DIR
-$(CORE_DIR)/build/obj/libRetroReversing/%.cpp.o: ../libRetroReversing/%.cpp
+./build/obj/libRetroReversing/%.cpp.o: ../libRetroReversing/%.cpp
 	-@$(MKDIR) -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(fpic) -DGB_INTERNAL -c $(OBJOUT)$@ $< 
 
-$(CORE_DIR)/build/obj/libRetroReversing/%.o: ../libRetroReversing/%.c
+./build/obj/libRetroReversing/%.o: ../libRetroReversing/%.c
 	-@$(MKDIR) -p $(dir $@)
 	$(CC) $(CFLAGS) $(fpic) -DGB_INTERNAL -c $(OBJOUT)$@ $< 
 

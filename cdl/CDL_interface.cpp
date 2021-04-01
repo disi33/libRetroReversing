@@ -97,7 +97,7 @@ void cdl_keyevents(int keysym, int keymod) {
     #ifndef USE_CDL
         return;
     #endif
-    printf("event_sdl_keydown frame:%d key:%d modifier:%d \n", l_CurrentFrame, keysym, keymod);
+    printf("event_sdl_keydown frame:%d key:%d modifier:%d \n", l_CurFrame, keysym, keymod);
     should_reverse_jumps = false;
     // S key
     if (keysym == 115) {
@@ -224,7 +224,7 @@ void show_interface() {
 }
 
 void corrupt_if_in_range(uint8_t* mem, uint32_t proper_cart_address) {
-    // if (proper_cart_address >= corrupt_start && proper_cart_address <= corrupt_end) { //l_CurrentFrame == 0x478 && length == 0x04) { //} proper_cart_address == 0xb4015c) {
+    // if (proper_cart_address >= corrupt_start && proper_cart_address <= corrupt_end) { //l_CurFrame == 0x478 && length == 0x04) { //} proper_cart_address == 0xb4015c) {
     //     printf("save_state_before\n");
     //     main_state_save(0, "before_corruption");
     //     printBytes(mem, proper_cart_address);
@@ -316,7 +316,7 @@ void log_dma_write(uint8_t* mem, uint32_t proper_cart_address, uint32_t cart_add
     t.length = length;
     t.ascii_header = get_header_ascii(mem, proper_cart_address);
     t.header = mem[proper_cart_address+3];
-    t.frame = l_CurrentFrame;
+    t.frame = l_CurFrame;
 
     // if (function_stack.size() > 0 && labels.find(current_function) != labels.end()) {
     t.func_addr = print_function_stack_trace(); // labels[current_function].func_name;
@@ -474,7 +474,7 @@ int reverse_jump(int take_jump, uint32_t jump_target) {
     // printf("Reversing jump %#08x %d \n", jump_target, jumps[jump_target]);
     // take_jump = !take_jump;
     // time_last_reversed = now;
-    // frame_last_reversed=l_CurrentFrame;
+    // frame_last_reversed=l_CurFrame;
     // last_reversed_address = key;
     // fileConfig["reversed_jumps"][key] = jumps[jump_target];
     // write_rom_mapping();
@@ -987,7 +987,7 @@ int cdl_log_jump(int take_jump, uint32_t jump_target, uint8_t* jump_target_memor
     //     time_t now = time(0);
     //     if (jumps[jump_target] < 3) {
     //         // should_reverse_jumps=false;
-    //         if ( now-time_last_reversed > 2) { // l_CurrentFrame-frame_last_reversed >(10*5) ||
+    //         if ( now-time_last_reversed > 2) { // l_CurFrame-frame_last_reversed >(10*5) ||
     //             take_jump = reverse_jump(take_jump, jump_target);               
     //         }
     //     } else if (now-time_last_reversed > 15) {
@@ -1034,7 +1034,7 @@ void save_table_mapping(int entry, uint32_t phys, uint32_t start,uint32_t end, b
         string value = "Entry:";
         value += to_string(entry);
         // value += " Frame:0x";
-        value += n2hexstr(l_CurrentFrame);
+        value += n2hexstr(l_CurFrame);
 
         bool isInJson = fileConfig["tlb"].find(key) != fileConfig["tlb"].end();
         if (isInJson) {
@@ -1330,7 +1330,7 @@ void cdl_log_ostask(uint32_t type, uint32_t flags, uint32_t bootcode, uint32_t b
         bootDma.rom_start = rspboot;
         bootDma.rom_end = rspboot+bootSize;
         bootDma.length = bootSize;
-        bootDma.frame = l_CurrentFrame;
+        bootDma.frame = l_CurFrame;
         bootDma.func_addr = print_function_stack_trace(); 
         bootDma.known_name = "rsp.boot";
         dmas[rspboot] = bootDma;
@@ -1348,7 +1348,7 @@ void cdl_log_ostask(uint32_t type, uint32_t flags, uint32_t bootcode, uint32_t b
     data.rom_start = ucodeDataRom;
     data.rom_end = ucodeDataRom+ucodeDataSize;
     data.length = ucodeDataSize;
-    data.frame = l_CurrentFrame;
+    data.frame = l_CurFrame;
     data.func_addr = print_function_stack_trace(); 
     data.is_assembly = false;
 
@@ -1358,7 +1358,7 @@ void cdl_log_ostask(uint32_t type, uint32_t flags, uint32_t bootcode, uint32_t b
     t.rom_start = ucodeRom;
     t.rom_end = ucodeRom+ucodeSize;
     t.length = ucodeSize;
-    t.frame = l_CurrentFrame;
+    t.frame = l_CurFrame;
     t.func_addr = print_function_stack_trace(); 
     t.is_assembly = false;
 
